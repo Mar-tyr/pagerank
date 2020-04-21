@@ -372,7 +372,7 @@ void Table::pagerank() {
             print_pagerank();
         }
     }
-    
+    cerr << "Total iterations: " << num_iterations << endl;
 }
 
 const void Table::print_params(ostream& out) {

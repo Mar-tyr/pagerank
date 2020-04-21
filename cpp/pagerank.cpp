@@ -36,6 +36,7 @@
 #include <vector>
 #include <cstring>
 #include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
@@ -140,7 +141,10 @@ int main(int argc, char **argv) {
         t.read_file(input);
     }
     cerr << "Calculating pagerank..." << endl;
+    clock_t start_time = clock();
     t.pagerank();
+    clock_t end_time = clock();
     cerr << "Done calculating!" << endl;
+    cerr << "Time cost: " << (end_time - start_time) * 1.0 / CLOCKS_PER_SEC * 1000 << "ms" << endl;
     t.print_pagerank_v();
 }
