@@ -42,6 +42,7 @@
 #include <string>
 #include <cstring>
 #include <limits>
+#include <omp.h>
 
 #include "table.h"
 
@@ -289,7 +290,7 @@ bool Table::add_arc(size_t from, size_t to) {
 }
 
 void Table::pagerank() {
-
+    omp_set_num_threads(4);
     vector<size_t>::iterator ci; // current incoming
     double diff = 1;
     size_t i;
@@ -307,7 +308,9 @@ void Table::pagerank() {
     
     pr.resize(num_rows);
 
-    pr[0] = 1;
+    for (size_t k = 0; k < pr.size(); k++) {
+        pr[k] = 1;
+    }
 
     if (trace) {
         print_pagerank();
@@ -331,7 +334,7 @@ void Table::pagerank() {
         } else {
             /* Normalize so that we start with sum equal to one */
             for (i = 0; i < pr.size(); i++) {
-                old_pr[i] = pr[i] / sum_pr;
+                old_pr[i] = pr[i];
             }
         }
 
@@ -339,7 +342,7 @@ void Table::pagerank() {
          * After normalisation the elements of the pagerank vector sum
          * to one
          */
-        sum_pr = 1;
+        // sum_pr = 1;
         
         /* An element of the A x I vector; all elements are identical */
         double one_Av = alpha * dangling_pr / num_rows;
@@ -349,6 +352,7 @@ void Table::pagerank() {
 
         /* The difference to be checked for convergence */
         diff = 0;
+        #pragma omp parallel for reduction(+:diff)
         for (i = 0; i < num_rows; i++) {
             /* The corresponding element of the H multiplication */
             double h = 0.0;
@@ -357,9 +361,9 @@ void Table::pagerank() {
                 double h_v = (num_outgoing[*ci])
                     ? 1.0 / num_outgoing[*ci]
                     : 0.0;
-                if (num_iterations == 0 && trace) {
-                    cout << "h[" << i << "," << *ci << "]=" << h_v << endl;
-                }
+                // if (num_iterations == 0 && trace) {
+                //     cout << "h[" << i << "," << *ci << "]=" << h_v << endl;
+                // }
                 h += h_v * old_pr[*ci];
             }
             h *= alpha;
