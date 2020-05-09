@@ -134,18 +134,22 @@ int main(int argc, char **argv) {
         i++;
     }
 
+    double start_time, end_time;
     t.print_params(cerr);
     cerr << "Reading input from " << input << "..." << endl;
+    start_time = omp_get_wtime();
     if (!strcmp(input.c_str(), "stdin")) {
             t.read_file("");
     } else {
         t.read_file(input);
     }
+    end_time = omp_get_wtime();
+    cerr << "IO Time cost: " << (end_time - start_time) << endl;
     cerr << "Calculating pagerank..." << endl;
-    double start_time = omp_get_wtime();
+    start_time = omp_get_wtime();
     t.pagerank();
-    double end_time = omp_get_wtime();;
+    end_time = omp_get_wtime();;
     cerr << "Done calculating!" << endl;
-    cerr << "Time cost: " << (end_time - start_time) << endl;
+    cerr << "Calculation Time cost: " << (end_time - start_time) << endl;
     t.print_pagerank_v();
 }
