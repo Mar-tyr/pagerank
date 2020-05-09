@@ -290,7 +290,7 @@ bool Table::add_arc(size_t from, size_t to) {
 }
 
 void Table::pagerank() {
-    omp_set_num_threads(256);
+    // omp_set_num_threads(256);
     vector<size_t>::iterator ci; // current incoming
     double diff = 1;
     size_t i;
@@ -352,7 +352,7 @@ void Table::pagerank() {
 
         /* The difference to be checked for convergence */
         diff = 0;
-        #pragma omp parallel for reduction(+:diff)
+        // #pragma omp parallel for reduction(+:diff)
         for (i = 0; i < num_rows; i++) {
             /* The corresponding element of the H multiplication */
             double h = 0.0;
