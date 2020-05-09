@@ -290,7 +290,7 @@ bool Table::add_arc(size_t from, size_t to) {
 }
 
 void Table::pagerank() {
-    omp_set_num_threads(4);
+    omp_set_num_threads(256);
     vector<size_t>::iterator ci; // current incoming
     double diff = 1;
     size_t i;
